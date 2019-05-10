@@ -18,6 +18,8 @@ class HexoToTypecho():
             self.insert_post(i)
             self.insert_tags_category()
             self.relationships()
+        self.cur.execute(
+            'ALTER TABLE typecho_relationships DROP PRIMARY KEY')
         self.db.close()
 
     def connectSQL(self):
@@ -31,7 +33,7 @@ class HexoToTypecho():
             print('连接成功')
             self.cur = sql.cursor()
             self.db = sql
-            # self.cur.execute('ALTER TABLE typecho_metas ADD UNIQUE KEY(name,type)')
+            self.cur.execute('ALTER TABLE typecho_metas ADD UNIQUE KEY(name,type)')
 
     def parse_hexo_md(self, file):
         # TODO 文件名可以作为缩略名
@@ -87,7 +89,7 @@ class HexoToTypecho():
         '''
 
         try:
-            cur.execute(sql, (data[0], file, data[1], modified, data[4]))
+            cur.execute(sql, (data[0], file.split('.md')[0], data[1], modified, data[4]))
             db.commit()
         except Exception as e:
             print(e)
